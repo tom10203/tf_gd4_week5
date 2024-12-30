@@ -6,6 +6,7 @@ TagManager:
   tags:
   - SpawnManager
   - UIManager
+  - Island
   layers:
   - Default
   - TransparentFX

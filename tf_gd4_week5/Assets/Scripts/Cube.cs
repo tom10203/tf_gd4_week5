@@ -13,6 +13,7 @@ public class Cube : MonoBehaviour
     {
         spawnManager = GameObject.FindGameObjectWithTag("SpawnManager").GetComponent<SpawnManager>();
         material = GetComponent<MeshRenderer>().material;
+        print(spawnManager);
     }
 
     private void Update()

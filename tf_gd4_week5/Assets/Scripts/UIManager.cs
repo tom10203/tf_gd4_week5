@@ -30,10 +30,10 @@ public class UIManager : MonoBehaviour
     {
         lives--;
         livesText.text = lives.ToString();
-        if (lives == 0)
-        {
-            EndGame();
-        }
+        //if (lives == 0)
+        //{
+        //    EndGame();
+        //}
     }
 
     public void StartGame()

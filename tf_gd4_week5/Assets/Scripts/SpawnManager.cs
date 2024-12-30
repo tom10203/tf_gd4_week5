@@ -36,6 +36,7 @@ public class SpawnManager : MonoBehaviour
     public GameObject island;
     public GameObject questionMarkPrefab;
     public GameObject timeCubePrefab;
+    public GameObject redQuestionMark;
 
     UIManager manager;
 
@@ -50,6 +51,9 @@ public class SpawnManager : MonoBehaviour
     float timeInBetweenTimeCubeSpawn = 3f;
     public float timeCubeTimer = 0f;
     public bool spawnTimeCube = true;
+    public float redQuestionMarkTimer = 0f;
+    public bool isRedQInScene = false;
+    float timeBetweenRedQuestionMarks = 2f;
 
     void Start()
     {
@@ -58,6 +62,7 @@ public class SpawnManager : MonoBehaviour
         SpawnBall(1, spawnPoint.position);
         SpawnCube(1, false, cubeBuffer);
         manager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<UIManager>();
+        HandleRedQuesionMarks();
     }
 
     void Update()
@@ -84,7 +89,7 @@ public class SpawnManager : MonoBehaviour
         CheckBallsYPos();
         CheckCubesYPos();
         HandlePowerUps();
-
+        HandleRedQuesionMarks();
 
         if (multiBall)
         {
@@ -155,6 +160,19 @@ public class SpawnManager : MonoBehaviour
 
     }
 
+    public void HandleRedQuesionMarks()
+    {
+        redQuestionMarkTimer += Time.deltaTime;
+        if (redQuestionMarkTimer > timeBetweenRedQuestionMarks && !isRedQInScene)
+        {
+            timeBetweenRedQuestionMarks = UnityEngine.Random.Range(6, 13);
+            Vector2 pointInUnitCircle = UnityEngine.Random.insideUnitCircle * circleRadius;
+            Vector3 newSpawnPoint = island.transform.position + island.transform.right * pointInUnitCircle.x + island.transform.forward * pointInUnitCircle.y + island.transform.up * -1f;
+            Instantiate(redQuestionMark, newSpawnPoint, Quaternion.LookRotation(island.transform.up), island.transform);
+            isRedQInScene = true;
+        }
+    }
+
     void HandlePowerUps()
     {
         powerUpTimer += Time.deltaTime;
@@ -196,17 +214,19 @@ public class SpawnManager : MonoBehaviour
             cubeSpawnSound.Play();
             GameObject newCube = Instantiate(cubePrefab, GenerateRandomSpawnPoint(), spawnPoint.rotation, island.transform);
             Cube newCubeScript = newCube.GetComponent<Cube>();
-            newCubeScript.buffer = buffer;
+            
 
             if (!isMultiCube)
             {
                 cubes.Add(newCube);
                 newCubeScript.isMultiCube = false;
+                newCubeScript.buffer = buffer;
             }
             else
             {
                 newCubeScript.isMultiCube = true;
                 newCube.GetComponent<MeshRenderer>().material = multiCubeMaterial;
+                newCubeScript.buffer = 10f;
             }
         }
     }
